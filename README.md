@@ -1,5 +1,5 @@
 
-<p><img src="https://github.com/PerchSecurity/PerchLabs/blob/main/images/CRU-main-tagline.png" width="250">
+<p><img src="https://github.com/ConnectWise-Software/ConnectWise-CRU/blob/main/images/CRU-main-tagline.png" width="250">
 </p>
 <h1> ConnectWise Cyber Research Unit Threat Feeds</h1>
 <p>This repository contains lists of threat intelligence discovered by the CRU using our internal sandbox built on top of the Perch platform or found while threat hunting. This data is threat intelligence the CRU has been collecting for years and using internally at ConnectWise for threat hunting and threat analysis assistance. We use this intelligence daily, searching for these indicators in our customer's network data to find new threats and filter out false positives.  This feed is updated daily.</p>
