@@ -63,3 +63,34 @@ alert dns $HOME_NET any -> $EXTERNAL_NET 53 (msg:"[ConnectWise CRU] GMiner Minin
 alert dns $HOME_NET any -> $EXTERNAL_NET 53 (msg:"[ConnectWise CRU] GMiner Mining Pool DNS Lookup (dapool.io)"; dns.query; content:"dapool.io"; nocase; endswith; classtype:trojan-activity; sid:900408; rev:1; metadata: created_at 2021_08_11, updated_at 2021_08_11;)
 alert dns $HOME_NET any -> $EXTERNAL_NET 53 (msg:"[ConnectWise CRU] GMiner Mining Pool DNS Lookup (btgpool.pro)"; dns.query; content:"btgpool.pro"; nocase; endswith; classtype:trojan-activity; sid:900409; rev:1; metadata: created_at 2021_08_11, updated_at 2021_08_11;)
 
+# sidewalk c2
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] MALWARE Potential SideWalk C2 Activity"; flow:established, to_server; http.method; content:"POST"; http.header_names; content:"gtsid|3a 20|"; content:"gtuvid|3a 20|"; tag:session,5,packets; reference:url, www.welivesecurity.com/2021/08/24/sidewalk-may-be-as-dangerous-as-crosswalk/; classtype:trojan-activity; sid:900413; rev:1; metadata: created_at 2021-08-25, updated_at 2021-08-25;)
+
+# prism c2
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] MALWARE Potential PRISM C2 Activity"; flow:established, to_server; http.method; content:"POST"; http.uri; content:"x?v="; content:"act="; content:"xid="; tag:session,5,packets; reference:url, cybersecurity.att.com/blogs/labs-research/prism-attacks-fly-under-the-radar; classtype:trojan-activity; sid:900414; rev:1; metadata: created_at 2021-08-26, updated_at 2021-08-26;)
+
+# autoTools
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] PUP autoTools Download Executable"; flow:established, to_server; http.method; content:"GET"; http.uri; content:"/apps/autoTools"; http.user_agent; content:"atsdacfg"; nocase; tag:session,5,packets; classtype:trojan-activity; sid:900418; rev:1; metadata: created_at 2021-08-30, updated_at 2021-08-30, mitre_tactic_id TA0040, mitre_tactic_name Impact, mitre_technique_id T1496, mitre_technique_name Resource_Hijacking;)
+
+# Trident request for cab/inf
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] MSHTML Request for .cab File (CVE-2021-40444)"; flow:established, to_server; http.method; content:"GET"; http.uri; content:"|2e|cab"; endswith; http.user_agent; content:"Trident|2f|"; tag:session,5,packets; classtype:trojan-activity; sid:900430; rev:1; metadata: created_at 2021-09-10, updated_at 2021-09-10, cve CVE_2021_40444, mitre_tactic_id TA0005, mitre_tactic_name Defense_Evasion, mitre_technique_id T1218, mitre_technique_name Signed Binary Proxy Execution;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] MSHTML Request for .inf File (CVE-2021-40444)"; flow:established, to_server; http.method; content:"GET"; http.uri; content:"|2e|inf"; endswith; http.user_agent; content:"Trident|2f|"; tag:session,5,packets; classtype:trojan-activity; sid:900431; rev:1; metadata: created_at 2021-09-10, updated_at 2021-09-10, cve CVE_2021_40444, mitre_tactic_id TA00005, mitre_tactic_name Defense_Evasion, mitre_technique_id T1218, mitre_technique_name Signed Binary Proxy Execution;)
+
+# vertex loader
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] Malware Vertex Loader HTTP Activity"; flow:established, to_server; http.method; content:"GET"; http.uri; content:".php"; pcre:"/type=(check|update|ping|report|ip|settings|loader)/Ui"; http.header; pcre:"/User-Agent\x3a\x20[a-zA-Z0-9]{20}\x0d\x0a/"; tag:session,5,packets; reference:url, app.any.run/tasks/a5c85ff1-aa0f-437c-9f25-c8e6596c4fc1/; classtype:trojan-activity; sid:900440; rev:1; metadata: created_at 2021-09-28, updated_at 2021-09-28, mitre_tactic_id TA0010, mitre_tactic_name Exfiltration, mitre_technique_id T1567, mitre_technique_name Exfiltration_Over_Web_Service;)
+
+# blustealer smtp exfiltration
+alert smtp $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] BluStealer SMTP Exfiltration"; flow:established, to_server; content:"Subject|3a 20|Passwords|3a 3a 3a 3a|"; nocase; fast_pattern; content:"X-MimeOLE|3a 20|"; tag:session,5,packets; reference:url, decoded.avast.io/anhho/blustealer/; classtype:trojan-activity; sid:900441; rev:1; metadata: created_at 2021-09-28, updated_at 2021-09-28, mitre_tactic_id TA0010, mitre_tactic_name Exfiltration, mitre_technique_id T1567, mitre_technique_name Exfiltration_Over_Web_Service;)
+
+# tomiris backdoor
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] Tomiris C2 Signalization Server Request"; flow:established, to_server; http.method; content:"GET"; http.host; content:"update.softhouse.store"; tag:session,5,packets; reference:url, securelist.com/darkhalo-after-solarwinds-the-tomiris-connection/104311/; classtype:trojan-activity; sid:900444; rev:1; metadata: created_at 2021-10-01, updated_at 2021-10-01, mitre_tactic_id TA0011, mitre_tactic_name Command_and_Control, mitre_technique_id T1568, mitre_technique_name Dynamic_Resolution;)
+
+# pup wavebrowser
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] PUP WaveBrowser User-Agent 'SWUpdater/x.x'"; flow:established, to_server; http.user_agent; content:"SWUpdater/"; pcre:"/[1-9]\.[0-9]/R"; tag:session,5,packets; classtype:trojan-activity; sid:900450; rev:1; metadata: created_at 2021-10-08, updated_at 2021-10-08;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] PUP WaveBrowser User-Agent 'BRWSR-GENERIC'"; flow:established, to_server; http.user_agent; content:"BRWSR-GENERIC"; fast_pattern; tag:session,5,packets; classtype:trojan-activity; sid:900451; rev:1; metadata: created_at 2021-10-08, updated_at 2021-10-08;)
+
+# lu0bot
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"[ConnectWise CRU] Lu0bot HTTP C2 Traffic"; flow:established, to_server; http.method; content:"GET"; http.uri; content:"/hri/?"; pcre:"/^[a-z0-9]{7}&(a|b)=/R"; tag:session,5,packets; reference:url, fumik0.com/2021/06/24/lu0bot-an-unknown-nodejs-malware-using-udp/; classtype:trojan-activity; sid:900452; rev:1; metadata: created_at 2021-10-13, updated_at 2021-10-13;)
+
+# colibri
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"[ConnectWise CRU] Colibri Loader C2 HTTP Fingerprint"; flow:established, to_client; http.response_body; content:"|a9| 2021 Colibri Loader"; fast_pattern; tag:session,5,packets; classtype:trojan-activity; sid:900461; rev:1; metadata: created_at 2021_10_27, updated_at 2021_10_27, mitre_tactic_id TA0011, mitre_tactic_name Command_and_Control, mitre_technique_id T1071, mitre_technique_name Application_Layer_Protocol;)
